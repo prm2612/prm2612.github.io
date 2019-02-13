@@ -74,6 +74,18 @@ class Player {
     this.playerManager_.addEventListener(cast.framework.events.EventType.ID3, (event) => {
       this.streamManager_.processMetadata('ID3', event.segmentData, event.timestamp)
     });
+
+    this.streamManager_.addEventListener(google.ima.dai.api.StreamEvent.Type.AD_BREAK_STARTED, (event) => {
+      this.adIsPlaying_ = true;
+      document.getElementById('ad-ui').style.display = 'block';
+      this.broadcast('adBreakStarted');
+    });
+
+    this.streamManager_.addEventListener(google.ima.dai.api.StreamEvent.Type.AD_BREAK_ENDED, (event) => {
+      this.adIsPlaying_ = false;
+      document.getElementById('ad-ui').style.display = 'none';
+      this.broadcast('adBreakEnded');
+    });
     
     this.streamManager_.addEventListener(google.ima.dai.api.StreamEvent.Type.AD_PROGRESS, (event) => {
       const adData = event.getStreamData().adProgressData;
@@ -82,7 +94,6 @@ class Player {
       document.getElementById('time-value').innerHTML = Math.ceil(parseFloat(adData.duration) - parseFloat(adData.currentTime));
       document.getElementById('ad-ui').style.display = 'block';
     });
-
 
     //Log the quartile events to the console for debugging
     const quartileEvents = [google.ima.dai.api.StreamEvent.Type.STARTED,

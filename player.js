@@ -71,6 +71,19 @@ class Player {
       }
     );
 
+    this.playerManager_.addEventListener(cast.framework.events.EventType.ID3, (event) => {
+      this.streamManager_.processMetadata('ID3', event.segmentData, event.timestamp)
+    });
+    
+    this.streamManager_.addEventListener(google.ima.dai.api.StreamEvent.Type.AD_PROGRESS, (event) => {
+      const adData = event.getStreamData().adProgressData;
+      document.getElementById('ad-position').innerHTML = adData.adPosition;
+      document.getElementById('total-ads').innerHTML = adData.totalAds;
+      document.getElementById('time-value').innerHTML = Math.ceil(parseFloat(adData.duration) - parseFloat(adData.currentTime));
+      document.getElementById('ad-ui').style.display = 'block';
+    });
+
+
     //Log the quartile events to the console for debugging
     const quartileEvents = [google.ima.dai.api.StreamEvent.Type.STARTED,
       google.ima.dai.api.StreamEvent.Type.FIRST_QUARTILE,
@@ -81,10 +94,7 @@ class Player {
       console.log(`IMA SDK Event: ${event.type}`);
     }, false);
 
-    this.playerManager_.addEventListener(cast.framework.events.EventType.ID3, (event) => {
-      this.streamManager_.processMetadata('ID3', event.segmentData, event.timestamp)
-    });
-    
+
 
     //TODO: override seek message 
     //this.mediaManager_.onSeek = this.onSeek.bind(this);

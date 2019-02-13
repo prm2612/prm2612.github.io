@@ -71,6 +71,16 @@ class Player {
       }
     );
 
+    //Log the quartile events to the console for debugging
+    const quartileEvents = [google.ima.dai.api.StreamEvent.Type.STARTED,
+      google.ima.dai.api.StreamEvent.Type.FIRST_QUARTILE,
+      google.ima.dai.api.StreamEvent.Type.MIDPOINT,
+      google.ima.dai.api.StreamEvent.Type.THIRD_QUARTILE,
+      google.ima.dai.api.StreamEvent.Type.COMPLETE];
+    this.streamManager_.addEventListener(quartileEvents, (event) => {
+      console.log(`IMA SDK Event: ${event.type}`);
+    }, false);
+
     this.playerManager_.addEventListener(cast.framework.events.EventType.ID3, (event) => {
       this.streamManager_.processMetadata('ID3', event.segmentData, event.timestamp)
     });
@@ -94,4 +104,4 @@ class Player {
     console.log(message);
     this.castContext_.sendCustomMessage(NAMESPACE, undefined, message);
   }
-}
+} 

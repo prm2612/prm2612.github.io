@@ -75,7 +75,9 @@ class Player {
       cast.framework.messages.MessageType.SEEK, (seekRequest) => {
         const seekTo = seekRequest.currentTime;
         const previousCuepoint = this.streamManager_.previousCuePointForStreamTime(seekTo);
-        if (!previousCuepoint.played) {
+        if (this.adIsPlaying_) {
+          seekRequest.currentTime = this.mediaElement_.currentTime;
+        } else if (!previousCuepoint.played) {
           // Adding 0.1 to cuepoint start time because of bug where stream freezes
           // when seeking to certain times in VOD streams.
           seekRequest.currentTime = previousCuepoint.start + 0.1
@@ -143,18 +145,6 @@ class Player {
     if (!this.adIsPlaying_) {
       this.mediaElement_.currentTime = time;
       this.broadcast_('Seeking to: ' + time);
-    }
-  }
-
-  snapback(time) {
-    const previousCuepoint = this.streamManager_.previousCuePointForStreamTime(time);
-    if (previousCuepoint.played) {
-      this.seek(time);
-    } else {
-      // Adding 0.1 to cuepoint start time because of bug where stream freezes
-      // when seeking to certain times in VOD streams.
-      this.seek(previousCuepoint.start + 0.1);
-      this.seekToTimeAfterAdBreak_ = time;
     }
   }
 

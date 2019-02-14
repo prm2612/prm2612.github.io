@@ -147,11 +147,6 @@ class Player {
       console.log(`IMA SDK Event: ${event.type}`);
     }, false);
 
-
-
-    //TODO: override seek message 
-    //this.mediaManager_.onSeek = this.onSeek.bind(this);
-
   }
 
   requestStream(request) {

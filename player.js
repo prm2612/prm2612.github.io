@@ -40,7 +40,24 @@ class Player {
     // where the first substring indicates the function to be called and the
     // following substrings are the parameters to be passed to the function.
     this.castContext_.addCustomMessageListener(NAMESPACE, (event) => {
-      console.log(event);
+      console.log('Received message from sender: ' + event.data);
+      const message = event.data.split(',');
+      const method = message[0];
+      switch (method) {
+        case 'bookmark':
+          const time = parseFloat(message[1]);
+          const bookmarkTime = this.streamManager_.contentTimeForStreamTime(time);
+          this.broadcast('bookmark,' + bookmarkTime);
+          this.bookmark(time);
+          break;
+        case 'getContentTime':
+          const contentTime = this.getContentTime();
+          this.broadcast('contentTime,' + contentTime);
+          break;
+        default:
+          this.broadcast('Message not recognized');
+          break;
+      }
     });
 
     this.playerManager_.setMessageInterceptor(
@@ -146,6 +163,11 @@ class Player {
       this.mediaElement_.currentTime = time;
       this.broadcast('Seeking to: ' + time);
     }
+  }
+
+  getContentTime() {
+    const currentTime = this.mediaElement_.currentTime;
+    return this.streamManager_.contentTimeForStreamTime(currentTime);
   }
 
   broadcast(message) {

@@ -84,6 +84,11 @@ class Player {
           const imaRequestData = request.media.customData;
           this.requestStream(imaRequestData);
 
+          //For VOD Streams, update start time on media element
+          if (this.startTime_ && request.media.streamType === cast.framework.messages.StreamType.BUFFERED) {
+            this.mediaElement_.currentTime = this.streamManager_.streamTimeForContentTime(this.startTime_);
+          }
+          
         });
       }
     );

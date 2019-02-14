@@ -144,7 +144,7 @@ class Player {
   seek(time) {
     if (!this.adIsPlaying_) {
       this.mediaElement_.currentTime = time;
-      this.broadcast_('Seeking to: ' + time);
+      this.broadcast('Seeking to: ' + time);
     }
   }
 

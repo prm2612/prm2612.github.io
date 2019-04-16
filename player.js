@@ -30,11 +30,14 @@ class Player {
   }
 
   setupCallbacks() {
+    
+    /*
     // Chromecast device is disconnected from sender app.
     this.castContext_.addEventListener(
       cast.framework.system.EventType.SENDER_DISCONNECTED, (event) => {
         window.close();
       });
+    */
 
     // Receives messages from sender app. The message is a comma separated string
     // where the first substring indicates the function to be called and the

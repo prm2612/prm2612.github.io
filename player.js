@@ -163,13 +163,13 @@ class Player {
     console.log("fire manual time update: " + fireManualTimeUpdate);
     const streamRequest = (request.assetKey) ?
       new google.ima.dai.api.LiveStreamRequest(request) :
-      new google.ima.dai.api.VODStreamRequest(request).then(() => {
+      new google.ima.dai.api.VODStreamRequest(request);
+    this.streamManager_.requestStream(streamRequest).then(() => {
         if (fireManualTimeUpdate) {
           console.log("firing manual time update");
           mediaElement_.dispatchEvent(new Event('timeupdate'));
         }
       });
-    this.streamManager_.requestStream(streamRequest);
     document.getElementById('splash').style.display = 'none';
   }
 

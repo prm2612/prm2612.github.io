@@ -95,7 +95,7 @@ class Player {
 
           if (fireManualTimeUpdate) {
             console.log("firing manual time update");
-            mediaElement_.dispatchEvent(new Event('timeupdate'));
+            this.mediaElement_.dispatchEvent(new Event('timeupdate'));
           }
 
           //For VOD Streams, update start time on media element

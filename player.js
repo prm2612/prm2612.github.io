@@ -85,7 +85,7 @@ class Player {
 
           const fireManualTimeUpdate = false;
           if(request.media.streamType === cast.framework.messages.StreamType.BUFFERED) {
-            fireManualTimeUpdate = loadRequestData.currentTime === 0;
+            fireManualTimeUpdate = request.currentTime === 0;
           }
           console.log("Will we fire manual time update: " + fireManualTimeUpdate);
 

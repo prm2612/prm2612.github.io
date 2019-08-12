@@ -83,7 +83,7 @@ class Player {
             resolve(request);
           }, false)
 
-          const fireManualTimeUpdate = false;
+          var fireManualTimeUpdate = false;
           if(request.media.streamType === cast.framework.messages.StreamType.BUFFERED) {
             fireManualTimeUpdate = request.currentTime === 0;
           }

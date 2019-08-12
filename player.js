@@ -93,6 +93,11 @@ class Player {
           const imaRequestData = request.media.customData;
           this.requestStream(imaRequestData, fireManualTimeUpdate);
 
+          if (fireManualTimeUpdate) {
+            console.log("firing manual time update");
+            mediaElement_.dispatchEvent(new Event('timeupdate'));
+          }
+
           //For VOD Streams, update start time on media element
           if (this.startTime_ && request.media.streamType === cast.framework.messages.StreamType.BUFFERED) {
             this.mediaElement_.currentTime = this.streamManager_.streamTimeForContentTime(this.startTime_);
@@ -158,18 +163,12 @@ class Player {
 
   }
 
-  requestStream(request, fireManualTimeUpdate) {
+  requestStream(request) {
     this.startTime_ = request.startTime;
-    console.log("fire manual time update: " + fireManualTimeUpdate);
     const streamRequest = (request.assetKey) ?
       new google.ima.dai.api.LiveStreamRequest(request) :
       new google.ima.dai.api.VODStreamRequest(request);
-    this.streamManager_.requestStream(streamRequest).then(() => {
-        if (fireManualTimeUpdate) {
-          console.log("firing manual time update");
-          mediaElement_.dispatchEvent(new Event('timeupdate'));
-        }
-      });
+    this.streamManager_.requestStream(streamRequest);
     document.getElementById('splash').style.display = 'none';
   }
 

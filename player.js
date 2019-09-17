@@ -83,6 +83,33 @@ class Player {
             resolve(request);
           }, false)
 
+          //Adding breaks to CAF
+          this.streamManager_.addEventListener(google.ima.dai.api.StreamEvent.Type.CUEPOINTS_CHANGED, (event) => {
+            const daiCuePoints = event.getStreamData().cuepoints;
+            request.media.breakClips = [];
+            request.media.breaks = [];
+            if(daiCuePoints) {
+              let id = 0;
+              let totalDuration = 0;
+              for (let i = 0; i < daiCuePoints.length; i++) {
+                let cuePoint = daiCuePoints[i];
+                let uniq_id = id++;
+                let bc = new cast.framework.messages.BreakClip("BC_" + uniq_id);
+                bc.duration = cuePoint.end - cuePoint.start;
+
+                let b = new cast.framework.messages.Break("B_" + uniq_id, [bc.id], cuePoint.start - totalDuration);
+                b.isEmbedded = true;
+                b.isWatched = cuePoint.played;
+                b.duration = cuePoint.end - cuePoint.start;
+                
+                totalDuration += b.duration;
+
+                request.media.breakClips.push(bc);
+                request.media.breaks.push(b);
+              }              
+            }
+          });
+
           var fireManualTimeUpdate = false;
           if(request.media.streamType === cast.framework.messages.StreamType.BUFFERED) {
             fireManualTimeUpdate = request.currentTime === 0;
@@ -107,21 +134,21 @@ class Player {
       }
     );
 
-    this.playerManager_.setMessageInterceptor(
-      cast.framework.messages.MessageType.SEEK, (seekRequest) => {
-        const seekTo = seekRequest.currentTime;
-        const previousCuepoint = this.streamManager_.previousCuePointForStreamTime(seekTo);
-        if (this.adIsPlaying_) {
-          seekRequest.currentTime = this.mediaElement_.currentTime;
-        } else if (!previousCuepoint.played) {
-          // Adding 0.1 to cuepoint start time because of bug where stream freezes
-          // when seeking to certain times in VOD streams.
-          seekRequest.currentTime = previousCuepoint.start + 0.1
-          this.seekToTimeAfterAdBreak_ = seekTo;
-        }
-        return seekRequest;
-      }
-    );
+    // this.playerManager_.setMessageInterceptor(
+    //   cast.framework.messages.MessageType.SEEK, (seekRequest) => {
+    //     const seekTo = seekRequest.currentTime;
+    //     const previousCuepoint = this.streamManager_.previousCuePointForStreamTime(seekTo);
+    //     if (this.adIsPlaying_) {
+    //       seekRequest.currentTime = this.mediaElement_.currentTime;
+    //     } else if (!previousCuepoint.played) {
+    //       // Adding 0.1 to cuepoint start time because of bug where stream freezes
+    //       // when seeking to certain times in VOD streams.
+    //       seekRequest.currentTime = previousCuepoint.start + 0.1
+    //       this.seekToTimeAfterAdBreak_ = seekTo;
+    //     }
+    //     return seekRequest;
+    //   }
+    // );
 
     this.playerManager_.addEventListener(cast.framework.events.EventType.ID3, (event) => {
       this.streamManager_.processMetadata('ID3', event.segmentData, event.timestamp)

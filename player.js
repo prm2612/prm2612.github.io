@@ -102,6 +102,8 @@ class Player {
                 b.isWatched = cuePoint.played;
                 b.duration = cuePoint.end - cuePoint.start;
                 
+                console.log(cuePoint);
+
                 totalDuration += b.duration;
 
                 request.media.breakClips.push(bc);

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html manifest="nocache.mf">
+<head>
+  <title>Receiver Demo</title>
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <script type="text/javascript" src="//imasdk.googleapis.com/js/sdkloader/ima3_dai_debug.js"></script>
+  <script type="text/javascript" src="player_ima.js"></script>
+</head>
+<body>
+  <div id='splash' style='position: absolute; left: 0; top: 0; right: 0; bottom: 0; background: white;'>
+    <div style='text-align: center; position: absolute; top: 50%; left: 50%;'>
+      <span>IMA SDK</span>
+    </div>
+  </div>
+  <cast-media-player id='mediaElement' autoplay='true' style='width: 100%; height: 90%;overflow-y: hidden;'></cast-media-player>
+  <div id='ad-ui' style='position: fixed; bottom:10px; background: white; display: none;'>Ad
+    <span id='ad-position'>1</span> of
+    <span id='total-ads'>1</span> Remaining time:
+    <span id='time-value'>0</span> s
+  </div>
+  <div id='watermark_wrapper' style='position: absolute; left: 0; top: 50px; right: 0; bottom: 0; opacity: 0.5; z-index: 99; font-size: xx-large; text-align: center;'>
+    SAMPLE IMA DAI RECEIVER - NOT FOR PRODUCTION USE
+  </div>
+  <script>
+    var player = new Player(document.getElementById('mediaElement'));
+    //player.start();
+  </script>
+</body>
+</html>
